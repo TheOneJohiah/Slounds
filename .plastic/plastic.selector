@@ -1,0 +1,4 @@
+repository "Slounds@thoresonm1@cloud"
+  path "/"
+    br "/main"
+    co "/main"
