@@ -234,7 +234,7 @@ GameObject:
   - component: {fileID: 336123993}
   - component: {fileID: 336123992}
   - component: {fileID: 336123991}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Block (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -536,7 +536,7 @@ GameObject:
   - component: {fileID: 594732086}
   - component: {fileID: 594732085}
   - component: {fileID: 594732084}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Block
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -876,10 +876,10 @@ MonoBehaviour:
   wallCheckRight: {fileID: 2098673348}
   groundLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
   wallLayer:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 8
   groundCheckRadius: 0.1
   wallCheckRadius: 0.1
   SnapInput: 1
