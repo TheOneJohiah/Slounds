@@ -22,15 +22,15 @@ public class SlimeController : MonoBehaviour
     private bool isGrounded;
     private bool isNearWallLeft;
     private bool isNearWallRight;
-    public float jumpForce = 10f;
+    public float jumpForce = 1000f;
     public float wallJumpForce = 10f;
     public Transform groundCheck;
     public Transform wallCheckLeft;
     public Transform wallCheckRight;
     public LayerMask groundLayer;
     public LayerMask wallLayer;
-    public float groundCheckRadius = 0.1f; // Adjust as needed
-    public float wallCheckRadius = 0.1f;
+    public float groundCheckRadius = 0.4f; // Adjust as needed
+    public float wallCheckRadius = 0.4f;
     private bool isDashing = false;
     private bool isJumping = false;
     private bool isWallJumping = false;
@@ -64,10 +64,12 @@ public class SlimeController : MonoBehaviour
     void Update()
     {
         // Handle Dash Input
-        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing && isGrounded)
+        if (Input.GetKeyDown(KeyCode.LeftShift) && !isDashing)
         {
             StartDash(); // Start dash when spacebar is pressed (or another key you choose)
         }
+        // Handle Jump Input
+        HandleJump();
     }
 
     void FixedUpdate()
@@ -108,17 +110,8 @@ public class SlimeController : MonoBehaviour
         }
     }
 
-    void HandleInput()
+    void HandleJump()
     {
-        // Horizontal movement input
-        float horizontal = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right
-        inputVector = new Vector2(horizontal, 0) * movementSpeed * (1 - hardnessInstant);
-
-        // Vertical input for modifying gravity (W/S or Up/Down)
-        float vertical = Input.GetAxisRaw("Vertical") * 0.5f;
-        gravityVector = new Vector2(0, gravityFactor * (1 - vertical) * (1 + hardnessInstant));
-        //Debug.Log(gravityVector);
-
         // Jump input
         if (Input.GetKeyDown(KeyCode.Space) & (isGrounded || isNearWallLeft || isNearWallRight)) // Allow jump if grounded or near a wall
         {
@@ -136,10 +129,19 @@ public class SlimeController : MonoBehaviour
                 jumpVector.y = wallJumpForce * (1 - hardnessInstant); // Apply a vertical force for wall jump
             }
         }
-        else if (Input.GetKeyDown(KeyCode.Space))
-        {
-            Debug.Log(isGrounded);
-        }
+
+    }
+
+    void HandleInput()
+    {
+        // Horizontal movement input
+        float horizontal = Input.GetAxisRaw("Horizontal"); // A/D or Left/Right
+        inputVector = new Vector2(horizontal, 0) * movementSpeed * (1 - hardnessInstant);
+
+        // Vertical input for modifying gravity (W/S or Up/Down)
+        float vertical = Input.GetAxisRaw("Vertical") * 0.5f;
+        gravityVector = new Vector2(0, gravityFactor * (1 - vertical) * (1 + hardnessInstant));
+        //Debug.Log(gravityVector);
     }
 
     void ApplyForces()
@@ -158,28 +160,40 @@ public class SlimeController : MonoBehaviour
         
         float movement = Mathf.Pow(Mathf.Abs(velocityDifference) * accelRate, 1) * Mathf.Sign(velocityDifference);
 
-        rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
-
-        /* Code for vertical movement */
-        Vector2 verticalVelocity = Vector2.zero;
-        verticalVelocity += jumpVector;
-        // Add gravity
-        if(!isDashing)
+        if(isGrounded)
         {
-            verticalVelocity += gravityVector;
+            rb.AddForce(movement * Vector2.right, ForceMode2D.Force);
         }
+
+        /* Code for ability movement */
+        targetVelocity = Vector2.zero;
 
         // Add dash impulse if dashing
         if (isDashing)
         {
-            verticalVelocity += dashVector;
+            if(dashTimeRemaining == dashDuration)
+            {
+                rb.AddForce(dashVector, ForceMode2D.Impulse);
+            }
             dashTimeRemaining -= Time.fixedDeltaTime;
             if (dashTimeRemaining <= 0)
             {
                 isDashing = false; // Stop dashing after the dash duration
             }
+            
         }
-        rb.AddForce(verticalVelocity, ForceMode2D.Impulse);
+        // Add jump impulse if dashing
+        else if (isJumping)
+        {
+            targetVelocity += jumpVector;
+            isJumping = false; // Stop jumping after the jump duration
+        }
+        else
+        {
+            targetVelocity += gravityVector;
+        }
+        
+        rb.AddForce(targetVelocity, ForceMode2D.Force);
     }
 
     void CheckGrounded()
@@ -187,7 +201,7 @@ public class SlimeController : MonoBehaviour
         // Cast a small raycast downward to check if the slime is grounded
         //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
         //isGrounded = hit.collider != null; // If there’s a collider below the slime, it’s grounded
-        //Debug.Log(isGrounded);
+        Debug.Log(isGrounded);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
