@@ -5,6 +5,7 @@ public class Bullet : MonoBehaviour
     private float speed = 10f; // Bullet speed
     private int bounceCount = 2; // Number of bounces allowed (set in Inspector)
     private int damage = 10;
+    private Vector2 lastVelocity;
 
     private Rigidbody2D rb;
     private Collider2D bulletCollider;
@@ -15,6 +16,12 @@ public class Bullet : MonoBehaviour
         bulletCollider = GetComponent<Collider2D>();
 
         bulletCollider.isTrigger = true;
+    }
+
+    void FixedUpdate()
+    {
+        Vector2 inVelocity = rb.linearVelocity;
+        lastVelocity = inVelocity;
     }
 
     public void Fire(Vector2 direction, Vector2 playerSpeed)
@@ -38,10 +45,11 @@ public class Bullet : MonoBehaviour
     // Handle collisions normally once collider is not a trigger
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.CompareTag("Player"))
+        SlimeController player = collision.collider.GetComponent<SlimeController>();
+        if (player != null)
         {
             // Get the player's health component
-            //collision.GetHurt(damage);
+            player.GetHurt(damage);
             // Destroy the bullet after hitting the player
             Destroy(gameObject);
         }
@@ -49,12 +57,11 @@ public class Bullet : MonoBehaviour
         else if (bounceCount > 0)
         {
             // Reflect the velocity using the first contact point's normal
-            Vector2 inVelocity = rb.linearVelocity;
             Vector2 normal = collision.contacts[0].normal;
-            Vector2 reflectVelocity = Vector2.Reflect(inVelocity, normal);
+            Vector2 reflectVelocity = Vector2.Reflect(lastVelocity, normal);
             rb.linearVelocity = reflectVelocity;
             Debug.Log(collision);
-            Debug.Log(inVelocity);
+            Debug.Log(lastVelocity);
             Debug.Log(reflectVelocity);
             Debug.Log(rb.linearVelocity);
             bounceCount--; // Use up one bounce

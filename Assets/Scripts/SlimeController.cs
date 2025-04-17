@@ -201,7 +201,7 @@ public class SlimeController : MonoBehaviour
         // Cast a small raycast downward to check if the slime is grounded
         //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, 0.1f);
         //isGrounded = hit.collider != null; // If there’s a collider below the slime, it’s grounded
-        Debug.Log(isGrounded);
+        //Debug.Log(isGrounded);
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
     }
 
@@ -241,7 +241,7 @@ public class SlimeController : MonoBehaviour
         }
     }
 
-    void GetHurt(int damage)
+    public void GetHurt(int damage)
     {
         currentHealth -= damage;
         Debug.Log("Player took damage, current health: " + currentHealth);

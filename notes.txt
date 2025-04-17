@@ -1,0 +1,20 @@
+Ground detection is broken
+Debug log output for map barrier bullet deletion still
+prints when bullet is deleted by wall impact
+Bullets should not despawn when crossing upper map barrier
+
+
+
+
+Slime animations
+Slime health mechanics
+Ramming damage based on hardness/density/speed
+Wall jumping
+Cards need implemented
+Multiplayer needs implemented
+Maps
+Complete menus
+Complete settings
+
+Character customization/card assets
+Music
