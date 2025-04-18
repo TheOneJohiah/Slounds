@@ -1,7 +1,11 @@
 Ground detection is broken
 Debug log output for map barrier bullet deletion still
 prints when bullet is deleted by wall impact
+--Happens because of OnTriggerExit2D in bound script?
 Bullets should not despawn when crossing upper map barrier
+--Fixed, new issue, bullets don't despawn when falling far away from the map
+Full auto doesn't work
+Overhaul time mechanics of player movement to save on variables
 
 
 
@@ -10,6 +14,7 @@ Slime animations
 Slime health mechanics
 Ramming damage based on hardness/density/speed
 Wall jumping
+Sound effects
 Cards need implemented
 Multiplayer needs implemented
 Maps

@@ -79,9 +79,6 @@ public class SlimeController : MonoBehaviour
         CheckWall();
         HandleInput();
         ApplyForces();
-
-        // Check if the slime is out of bounds
-        CheckBounds();
     }
 
     void GetHard(){
@@ -223,22 +220,6 @@ public class SlimeController : MonoBehaviour
         dashVector = (mousePosition - (Vector2)transform.position).normalized * dashForce * (1 - hardnessInstant);
         dashTimeRemaining = dashDuration;
         isDashing = true;
-    }
-
-    void CheckBounds()
-    {
-        // Define boundaries (you can adjust these values)
-        float boundX = 20f; // Horizontal limit
-        float boundY = 10f; // Vertical limit
-
-        Vector2 pos = transform.position;
-        if (Mathf.Abs(pos.x) > boundX || Mathf.Abs(pos.y) > boundY)
-        {
-            // Teleport back to (0,0)
-            transform.position = Vector2.zero;
-            // Optionally, reset velocity:
-            rb.linearVelocity = Vector2.zero;
-        }
     }
 
     public void GetHurt(int damage)

@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    private float speed = 10f; // Bullet speed
+    private float speed = 30f; // Bullet speed
     private int bounceCount = 2; // Number of bounces allowed (set in Inspector)
     private int damage = 10;
     private Vector2 lastVelocity;
-
+    public bool ignoreBoundary = false;
     private Rigidbody2D rb;
     private Collider2D bulletCollider;
 
@@ -60,15 +60,16 @@ public class Bullet : MonoBehaviour
             Vector2 normal = collision.contacts[0].normal;
             Vector2 reflectVelocity = Vector2.Reflect(lastVelocity, normal);
             rb.linearVelocity = reflectVelocity;
-            Debug.Log(collision);
-            Debug.Log(lastVelocity);
-            Debug.Log(reflectVelocity);
-            Debug.Log(rb.linearVelocity);
+            //Debug.Log(collision);
+            //Debug.Log(lastVelocity);
+            //Debug.Log(reflectVelocity);
+            //Debug.Log(rb.linearVelocity);
             bounceCount--; // Use up one bounce
         }
         else
         {
             // No bounces remaining, so destroy the bullet
+            ignoreBoundary = true;
             Destroy(gameObject);
         }
     }
